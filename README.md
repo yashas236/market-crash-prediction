@@ -86,6 +86,7 @@ python plot_backtest.py
 ```
 
 _Output: Saves `backtest_visualization.png`._
+![Backtest Visualization](./backtest_visualization.png)
 
 ## 5. Performance & Analysis
 
@@ -99,7 +100,9 @@ Many "false alarms" were correctly identified geopolitical threats (e.g., **2019
 
 ### Model Interpretability (SHAP)
 
-SHAP analysis reveals that the **1-day percentage changes in GPR Acts and Threats** are the most significant predictors. This confirms the model is highly attuned to sudden, sharp escalations in risk rather than baseline tension levels.
+SHAP analysis reveals that the **GPR_Threats** are the most significant predictors.
+
+![SHAP Summary](./shap_summary.png)
 
 ## 6. Future Work
 
