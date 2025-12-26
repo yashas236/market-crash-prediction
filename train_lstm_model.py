@@ -33,7 +33,7 @@ WARNING_WINDOW_DAYS = 10
 EPOCHS = 100 
 PATIENCE = 20
 
-# --- 3. Load Final Datasets (from local folder) ---
+# --- 2. Load Final Datasets (from local folder) ---
 try:
     train_df = pd.read_csv("data/train_final.csv", index_col='Date', parse_dates=True)
     val_df = pd.read_csv("data/validation_final.csv", index_col='Date', parse_dates=True)
@@ -43,7 +43,7 @@ except FileNotFoundError:
     exit()
 print("Loaded train, validation, and test datasets.")
 
-# --- 4. Prepare Data for Modeling (GPR-ONLY FEATURE LIST) ---
+# --- 3. Prepare Data for Modeling (GPR-ONLY FEATURE LIST) ---
 feature_columns = [
     'GPR_Composite', 'GPR_Threats', 'GPR_Acts',
     'GPR_Threats_MA_63', 'GPR_Threats_MA_126', 'GPR_Threats_Trend', 'GPR_Acts_MA_63',
@@ -59,12 +59,12 @@ y_val_raw = val_df[target_column]
 X_test = test_df[feature_columns]
 y_test = test_df[target_column] 
 
-# --- 5. Create New Warning-Based Target (Y) (Identical) ---
+# --- 4. Create New Warning-Based Target (Y) (Using Utils) ---
 y_train = utils.create_warning_labels(y_train_raw.values, WARNING_WINDOW_DAYS)
 y_val = utils.create_warning_labels(y_val_raw.values, WARNING_WINDOW_DAYS)
 print(f"Training on {np.sum(y_train)} total 'warning' days.")
 
-# --- 6. Normalize Features (Identical) ---
+# --- 5. Normalize Features & Save Scaler ---
 scaler = MinMaxScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_val_scaled = scaler.transform(X_val)
@@ -73,7 +73,7 @@ print(f"GPR feature scaler saved as '{config.SCALER_GPR}'")
 X_test_scaled = scaler.transform(X_test)
 print("Features normalized.")
 
-# --- 7. Create Sequences (Identical) ---
+# --- 6. Create Sequences (Identical) ---
 def create_sequences(X, y, lookback_period):
     X_sequences, y_sequences = [], []
     for i in range(len(X) - lookback_period):
@@ -86,7 +86,7 @@ X_val_seq, y_val_seq = create_sequences(X_val_scaled, y_val, LOOKBACK_DAYS)
 X_test_seq, y_test_seq = create_sequences(X_test_scaled, y_test.values, LOOKBACK_DAYS)
 print(f"Created sequences with lookback of {LOOKBACK_DAYS} days.")
 
-# --- 8. Calculate Class Weights (Identical) ---
+# --- 7. Calculate Class Weights (Identical) ---
 print("Calculating class weights...")
 if len(np.unique(y_train_seq)) > 1:
     class_weights = class_weight.compute_class_weight(
@@ -96,7 +96,7 @@ if len(np.unique(y_train_seq)) > 1:
 else:
     class_weight_dict = None
 
-# --- 9. Build the STACKED Bi-LSTM Model ---
+# --- 8. Build the STACKED Bi-LSTM Model ---
 model = Sequential()
 model.add(Bidirectional(LSTM( # <-- Wrap the first layer
     units=50, 
@@ -108,11 +108,11 @@ model.add(LSTM(units=50, return_sequences=False)) # The second layer can stay th
 model.add(Dropout(0.2))
 model.add(Dense(units=1, activation='sigmoid'))
 
-# --- 10. Compile the Model (Identical) ---
+# --- 9. Compile the Model (Identical) ---
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 print("Model compiled.")
 
-# --- 11. Train the Model with Early Stopping (Identical) ---
+# --- 10. Train the Model with Early Stopping (Identical) ---
 print("\nStarting model training with Early Stopping...")
 early_stopping = EarlyStopping(monitor='val_loss', patience=PATIENCE, verbose=1, mode='min', restore_best_weights=True)
 history = model.fit(
@@ -126,13 +126,13 @@ history = model.fit(
 )
 print("Model training complete.")
 
-# --- 12. Save Model & Test Data (local) ---
+# --- 11. Save Model & Test Data (local) ---
 model.save("trained_ews_model_gpr.h5")
 np.save("X_test_seq_gpr.npy", X_test_seq)
 np.save("y_test_seq_gpr.npy", y_test_seq)
 print("\nTrained model saved as 'trained_ews_model_gpr.h5'")
 
-# --- 12. Plot Training Curves (Identical) ---
+# --- 12. Plot Training Curves ---
 print("\nGenerating training history plots...")
 try:
     plt.figure(figsize=(12, 5))

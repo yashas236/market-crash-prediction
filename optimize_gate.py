@@ -42,7 +42,7 @@ print("Loaded models and validation data.")
 # --- 3. PREPARE DATA AND GENERATE BASE PREDICTIONS ---
 
 # 1. GPR/Spark Predictions
-# We need a scaler for the GPR data. We'll fit it on the training data to be consistent.
+# Use the pre-fitted scaler loaded from config.SCALER_GPR
 
 X_gpr_val_scaled = gpr_scaler.transform(df_val[config.GPR_FEATURES])
 

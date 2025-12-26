@@ -91,7 +91,7 @@ print("\nDaily Area Under the ROC Curve (AUROC):")
 print(f"AUROC: {roc_auc_score(y_true, y_pred_proba):.4f}")
 print("\nDaily Confusion Matrix:"); print(confusion_matrix(y_true, y_pred_binary))
 
-# --- 5. Find Ground-Truth Crash Events (Identical) ---
+# --- 5. Find Ground-Truth Crash Events (Using Utils) ---
 event_groups = utils.group_crash_events(y_true)
 if not event_groups: 
     print("No crash events found in test data.")
