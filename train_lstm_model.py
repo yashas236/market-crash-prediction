@@ -44,12 +44,7 @@ except FileNotFoundError:
 print("Loaded train, validation, and test datasets.")
 
 # --- 3. Prepare Data for Modeling (GPR-ONLY FEATURE LIST) ---
-feature_columns = [
-    'GPR_Composite', 'GPR_Threats', 'GPR_Acts',
-    'GPR_Threats_MA_63', 'GPR_Threats_MA_126', 'GPR_Threats_Trend', 'GPR_Acts_MA_63',
-    'GPR_Threats_1D_PctChange', 'GPR_Acts_1D_PctChange', 'GPR_Threats_5D_PctChange',
-    'GPR_Threats_Vol_21D', 'GPR_Acts_Vol_21D'
-]
+feature_columns = config.GPR_FEATURES
 target_column = 'Crash_Event'
 # (Rest of data prep is identical)
 X_train = train_df[feature_columns]

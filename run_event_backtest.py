@@ -194,39 +194,51 @@ try:
     # --- 12-FEATURE LIST ---
     N_FEATURES = len(config.GPR_FEATURES)
     
-    # 1. Reshape our 3D data to 2D for SHAP
-    X_test_2d = X_test_seq.reshape(X_test_seq.shape[0], LOOKBACK_DAYS * N_FEATURES)
-
-    # --- THIS IS THE FIX ---
-    print("Cleaning data for SHAP (replacing inf/nan with 0)...")
-    X_test_2d = np.nan_to_num(X_test_2d, copy=False, nan=0.0, posinf=0.0, neginf=0.0)
+    # 1. Clean data for SHAP (replacing inf/nan with 0)
+    # GradientExplainer works directly with 3D tensors.
+    print("Cleaning data for SHAP...")
+    X_test_seq = np.nan_to_num(X_test_seq, copy=False, nan=0.0, posinf=0.0, neginf=0.0)
     print("Data cleaned.")
-    # --- END FIX ---
-
-    # 2. Summarize the 2D data.
-    # Use 100 samples for a stable result
-    background_data_2d = shap.kmeans(X_test_2d[np.random.choice(X_test_2d.shape[0], 20, replace=False)], 20)
     
-    # 3. Create the prediction function
-    def model_predict_proba(data_2d):
-        data_3d = data_2d.reshape(-1, LOOKBACK_DAYS, N_FEATURES)
-        return model.predict(data_3d, verbose=0)
-        
-    # 4. Create the explainer
-    explainer = shap.KernelExplainer(model_predict_proba, background_data_2d)
+    # 2. Select Background Data for GradientExplainer
+    # We use random samples from the test set as the background distribution.
+    background_indices = np.random.choice(X_test_seq.shape[0], 100, replace=False)
+    background_data_3d = X_test_seq[background_indices]
     
-    # 5. Explain a 2D sample (Use 100 samples for a stable result)
-    samples_to_explain_2d = X_test_2d[np.random.choice(X_test_2d.shape[0], 20, replace=False)]
+    # 3. Create the GradientExplainer
+    # This uses the model's gradients to calculate importance, which is much faster than KernelExplainer.
+    explainer = shap.GradientExplainer(model, background_data_3d)
     
-    shap_values_2d = explainer.shap_values(samples_to_explain_2d, nsamples="auto") 
+    # 4. Select samples to explain (Use 200 for high accuracy)
+    explain_indices = np.random.choice(X_test_seq.shape[0], 200, replace=False)
+    samples_to_explain_3d = X_test_seq[explain_indices]
     
-    # 6. Reshape the SHAP values back to 3D for analysis
-    shap_values_3d = shap_values_2d[0].reshape(-1, LOOKBACK_DAYS, N_FEATURES)
+    # 5. Compute SHAP values
+    print("Computing SHAP values with GradientExplainer...")
+    shap_values = explainer.shap_values(samples_to_explain_3d)
+    
+    # shap_values is a list (one array per model output). Our model has 1 output.
+    if isinstance(shap_values, list):
+        shap_values_3d = shap_values[0]
+    else:
+        shap_values_3d = shap_values
     
     # 7. Manually plot the global feature importance
-    axes_to_average = tuple(range(shap_values_3d.ndim - 1))
-    global_importance = np.mean(np.abs(shap_values_3d), axis=axes_to_average)
+    print(f"SHAP values shape: {shap_values_3d.shape}")
     
+    # Handle potential extra dimension (e.g., (Samples, Time, Features, 1))
+    if shap_values_3d.ndim == 4 and shap_values_3d.shape[-1] == 1:
+        shap_values_3d = np.squeeze(shap_values_3d, axis=-1)
+        print(f"Squeezed SHAP values shape: {shap_values_3d.shape}")
+
+    # We expect shape (Samples, Time, Features). We want to average over Samples (0) and Time (1).
+    if shap_values_3d.ndim == 3:
+        global_importance = np.mean(np.abs(shap_values_3d), axis=(0, 1))
+    else:
+        # Fallback: Average over all axes except the last one (Features)
+        axes_to_average = tuple(range(shap_values_3d.ndim - 1))
+        global_importance = np.mean(np.abs(shap_values_3d), axis=axes_to_average)
+
     print(f"Calculated global importance: {global_importance}")
     
     feature_importance_series = pd.Series(
