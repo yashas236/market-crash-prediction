@@ -1,5 +1,7 @@
 # Hybrid Geopolitical and Market Fragility Model for Crash Prediction
 
+![CI Status](https://github.com/<YOUR_USERNAME>/<YOUR_REPO_NAME>/actions/workflows/ci.yml/badge.svg)
+
 ## 1. Objective
 
 The primary goal of this project is to develop and backtest a sophisticated early warning system for predicting major stock market crashes. The system uses a hybrid model that combines geopolitical risk indicators with market fragility metrics to create a more nuanced and accurate prediction mechanism than either data source could provide alone.
