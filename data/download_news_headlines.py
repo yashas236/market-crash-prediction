@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 # --- Configuration ---
 # IMPORTANT: Replace with your actual API key
-API_KEY = "3bfaa501d9ef4b288c0d76def382eae8" 
+API_KEY = "" 
 
 # Base URL for the 'everything' endpoint
 BASE_URL = "https://newsapi.org/v2/everything" 
