@@ -23,9 +23,9 @@ HIGH_SENS_GPR_THRESHOLD = 0.37    # Be sensitive when market is fragile
 LOW_SENS_GPR_THRESHOLD = 0.52     # Be tolerant when market is stable
 
 # --- File Paths ---
-DATA_TRAIN = "data/train_final.csv"
-DATA_TEST = "data/test_final.csv"
-DATA_VAL = "data/validation_final.csv"
+DATA_TRAIN = "data/train_structured.csv"
+DATA_TEST = "data/test_structured.csv"
+DATA_VAL = "data/validation_structured.csv"
 MODEL_SPARK = "trained_ews_model_gpr.h5"
 MODEL_FUEL = "svm_fuel_model.pkl"
 SCALER_MARKET = "market_features_scaler.pkl"

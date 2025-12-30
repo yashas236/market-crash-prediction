@@ -28,16 +28,16 @@ tf.random.set_seed(SEED_VALUE)
 print("Starting Phase 4: Training EWS Model (GPR Features Only)...")
 
 # --- 1. SET PARAMETERS ---
-LOOKBACK_DAYS = 30
-WARNING_WINDOW_DAYS = 10 
+LOOKBACK_DAYS = config.LOOKBACK_DAYS
+WARNING_WINDOW_DAYS = config.WARNING_WINDOW_DAYS 
 EPOCHS = 100 
 PATIENCE = 20
 
 # --- 2. Load Final Datasets (from local folder) ---
 try:
-    train_df = pd.read_csv("data/train_final.csv", index_col='Date', parse_dates=True)
-    val_df = pd.read_csv("data/validation_final.csv", index_col='Date', parse_dates=True)
-    test_df = pd.read_csv("data/test_final.csv", index_col='Date', parse_dates=True)
+    train_df = pd.read_csv(config.DATA_TRAIN, index_col='Date', parse_dates=True)
+    val_df = pd.read_csv(config.DATA_VAL, index_col='Date', parse_dates=True)
+    test_df = pd.read_csv(config.DATA_TEST, index_col='Date', parse_dates=True)
 except FileNotFoundError:
     print("Error: Final data files not found. (Did you copy the 'data' folder to this new directory?)")
     exit()
