@@ -26,15 +26,13 @@ This is a Support Vector Machine (SVM) model trained on technical indicators tha
 - **RSI (Relative Strength Index):** A momentum oscillator that measures the speed and change of price movements.
 - **Rolling 1st Percentile:** A measure of recent downside volatility.
 
-### The Gated Mechanism
+### The Dual-Sensor Mechanism (OR Logic)
 
-The core innovation of this project is the "gated" logic that combines the two models. Instead of using a single, static threshold for a crash prediction, the system dynamically adjusts its sensitivity based on the market's condition.
+The core innovation is the use of a **Dual-Sensor** approach rather than a single model. The system treats the two models as independent alarms:
 
-- The "Fuel" model first determines if the market is in a **High Fragility** or **Low Fragility** state.
-- If the market is fragile, a **lower, more sensitive GPR threshold** is used. This means even a minor geopolitical "spark" can trigger a warning.
-- If the market is stable, a **higher, less sensitive GPR threshold** is used, requiring a much more significant geopolitical event to trigger an alarm.
-
-This dual-threshold system is designed to maximize the F1-Score, balancing the trade-off between correctly predicting crashes (Recall) and avoiding false alarms (Precision).
+- **The "Spark" Alarm:** Triggers if Geopolitical Risk > `GPR_PANIC_THRESHOLD`.
+- **The "Fuel" Alarm:** Triggers if Market Fragility > `MARKET_CRITICAL_THRESHOLD`.
+- **Final Decision:** If **EITHER** alarm sounds, the system issues a Crash Warning.
 
 ## 3. Installation
 

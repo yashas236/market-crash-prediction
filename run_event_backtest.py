@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="shap")
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="sklearn")
 
-print("Starting Full Backtest (Gated Spark & Fuel Model)...")
+print("Starting Full Backtest (Dual-Sensor Spark & Fuel Model)...")
 
 # --- 1. SET PARAMETERS ---
 WARNING_WINDOW_DAYS = config.WARNING_WINDOW_DAYS
@@ -43,8 +43,8 @@ except FileNotFoundError:
     exit()
 print("Loaded GPR-LSTM ('Spark') and Market-SVM ('Fuel') models and test data.")
 
-# --- 3. Get Model Predictions (Gated Logic) ---
-print("Generating gated predictions...")
+# --- 3. Get Model Predictions (Dual-Sensor Logic) ---
+print("Generating dual-sensor predictions...")
 
 # 1. Get the "Spark" signal (LSTM, trained ONLY on GPR)
 gpr_prob = model.predict(X_test_seq).flatten()
@@ -89,8 +89,8 @@ np.save(config.PRED_FUEL, market_fragility_prob) # The internal SVM probability
 np.save(config.PRED_BINARY, y_pred_binary)       # The final 0/1 signal (OR logic)
 
 # COMPATIBILITY FIX: 
-# The "Dual Sensor" logic uses a static threshold (0.70) for GPR.
-# We create an array filled with 0.70 so your plotting script draws a flat cutoff line.
+# The "Dual Sensor" logic uses a static threshold for GPR.
+# We create an array filled with that threshold so your plotting script draws a flat cutoff line.
 static_thresholds = np.full(shape=y_pred_proba.shape, fill_value=GPR_PANIC_THRESHOLD)
 np.save(config.THRESHOLDS, static_thresholds)
 
@@ -168,7 +168,7 @@ if pred_alarm_indices.any():
 
 # --- 8. Report Event-Based Metrics (Identical) ---
 print("\n--- Event-Based Backtest Results ---")
-print(f"Warning Window: {WARNING_WINDOW_DAYS} days | Gated Threshold Logic")
+print(f"Warning Window: {WARNING_WINDOW_DAYS} days | Dual-Sensor OR Logic")
 print("-" * 40)
 print(f"Total Actual Crash Events: {len(event_groups)}")
 print(f"Events Predicted Early (Hits): {events_hit}")

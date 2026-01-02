@@ -6,7 +6,7 @@ The primary objective of this project is to develop and backtest a robust Early 
 
 ## 2. Methodology & Architecture
 
-The system employs a dual-model approach, integrated via a dynamic gating mechanism.
+The system employs a dual-model approach, integrated via a Dual-Sensor "OR" Logic mechanism.
 
 ### 2.1. The "Spark" Model: Geopolitical Risk (Bi-LSTM)
 
@@ -20,15 +20,17 @@ The system employs a dual-model approach, integrated via a dynamic gating mechan
 - **Input:** Technical indicators representing systemic risk, specifically the VIX (Volatility Index), RSI (Relative Strength Index), and downside volatility metrics.
 - **Purpose:** To classify the market regime as "Fragile" (High Risk) or "Stable" (Low Risk).
 
-### 2.3. The Dynamic Gating Mechanism (Core Innovation)
+### 2.3. The Dual-Sensor Mechanism (OR Logic)
 
-Unlike standard classifiers that use a static decision threshold, this project implements a **Dynamic Thresholding Logic**:
+Unlike complex gating systems that modulate thresholds, this project implements a robust **Dual-Sensor "OR" Logic**:
 
-1.  The **Fuel Model** assesses the market state.
-2.  **High Fragility State:** The system lowers the sensitivity threshold for the GPR model. A minor geopolitical event is sufficient to trigger a crash warning.
-3.  **Low Fragility State:** The system raises the threshold. Only extreme geopolitical shocks can trigger a warning.
+1.  **Independent Monitoring:** Both the "Spark" (Geopolitical) and "Fuel" (Market) models monitor the environment simultaneously and independently.
+2.  **The "OR" Trigger:** A crash warning is issued if **EITHER**:
+    - The Geopolitical Risk exceeds its critical panic threshold (Exogenous Shock).
+    - **OR**
+    - The Market Fragility exceeds its critical instability threshold (Endogenous Collapse).
 
-This approach optimizes the F1-Score by balancing Recall (catching crashes) and Precision (reducing noise).
+This approach ensures that the system captures both purely geopolitical crashes (where the market might look stable until the news hits) and purely economic crashes (where there is no geopolitical trigger), maximizing Recall.
 
 ## 3. Performance Evaluation
 
@@ -56,7 +58,7 @@ SHAP (SHapley Additive exPlanations) analysis was conducted to ensure the model 
 
 ## 5. Conclusion & Future Work
 
-This project demonstrates that integrating geopolitical text-based signals with market technicals significantly enhances crash prediction capabilities compared to univariate baselines. The "Gated" architecture successfully mimics the real-world interaction between exogenous shocks and endogenous market vulnerability.
+This project demonstrates that integrating geopolitical text-based signals with market technicals significantly enhances crash prediction capabilities compared to univariate baselines. The "Dual-Sensor" architecture successfully mimics the real-world interaction between exogenous shocks and endogenous market vulnerability.
 
 **Future Directions:**
 To address the identified limitations, future iterations will incorporate **Macroeconomic Indicators** (specifically BAML High-Yield Credit Spreads) into the "Fuel" model to detect credit-driven crises that are currently missed.
