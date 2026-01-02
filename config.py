@@ -18,9 +18,8 @@ MARKET_FEATURES = [
 
 # --- Optimized Thresholds (Default) ---
 # These can be updated after running optimize_gate.py
-FRAGILITY_THRESHOLD = 0.04        # Low because SVM probabilities are skewed low
-HIGH_SENS_GPR_THRESHOLD = 0.37    # Be sensitive when market is fragile
-LOW_SENS_GPR_THRESHOLD = 0.52     # Be tolerant when market is stable
+GPR_PANIC_THRESHOLD = 0.5679          # Trigger for external geopolitical shock
+MARKET_CRITICAL_THRESHOLD = 0.2692    # Trigger for internal systemic failure (SVM)
 
 # --- File Paths ---
 DATA_TRAIN = "data/train_structured.csv"
@@ -30,6 +29,14 @@ MODEL_SPARK = "trained_ews_model_gpr.h5"
 MODEL_FUEL = "svm_fuel_model.pkl"
 SCALER_MARKET = "market_features_scaler.pkl"
 SCALER_GPR = "gpr_features_scaler.pkl"
+
+# --- Intermediate Output Files ---
+SEQ_X_TEST = "X_test_seq_gpr.npy"
+SEQ_Y_TEST = "y_test_seq_gpr.npy"
+PRED_PROBA = "y_pred_proba.npy"
+PRED_FUEL = "y_pred_fuel.npy"
+PRED_BINARY = "y_pred_binary.npy"
+THRESHOLDS = "dynamic_thresholds.npy"
 
 # --- Event Definitions ---
 

@@ -67,7 +67,7 @@ macd = ta.macd(market_data['close'])
 market_data = market_data.join(macd[['MACD_12_26_9', 'MACDh_12_26_9']])
 print("Technical indicators added.")
 
-# --- 5. Define and Calculate Target Variable (Y) (Identical) ---
+# --- 5. Define and Calculate Target Variable (Y) ---
 market_data['Log_Return'] = np.log(market_data['close'] / market_data['close'].shift(1))
 rolling_window = 252
 market_data['Rolling_1st_Percentile'] = market_data['Log_Return'].rolling(window=rolling_window).quantile(0.01)
@@ -93,7 +93,7 @@ for feature in features_to_process:
 master_df = master_df.dropna()
 print("Merged, ffilled, and dropped NaNs from master_df.")
 
-# --- 8. Chronological Split (Identical) ---
+# --- 8. Chronological Train/Validation/Test Split ---
 train_end = '2015-12-31'
 validation_end = '2018-12-31'
 train_set = master_df.loc[:train_end]

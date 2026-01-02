@@ -12,11 +12,11 @@ try:
     df_test = pd.read_csv(config.DATA_TEST, index_col="Date", parse_dates=True)
     
     # Load the sequences used for prediction
-    y_pred_proba = np.load("y_pred_proba.npy")
-    y_pred_fuel = np.load("y_pred_fuel.npy")
-    y_pred_binary = np.load("y_pred_binary.npy")
-    y_true = np.load("y_test_seq_gpr.npy")
-    dynamic_thresholds = np.load("dynamic_thresholds.npy")
+    y_pred_proba = np.load(config.PRED_PROBA)
+    y_pred_fuel = np.load(config.PRED_FUEL)
+    y_pred_binary = np.load(config.PRED_BINARY)
+    y_true = np.load(config.SEQ_Y_TEST)
+    dynamic_thresholds = np.load(config.THRESHOLDS)
 
 except FileNotFoundError as e:
     print(f"Error loading data files: {e}")
@@ -83,8 +83,8 @@ ax1.legend(loc="upper left")
 ax1.grid(True, which="both", ls="--", linewidth=0.5)
 
 # --- PANEL 2: The "Fuel" (Market Fragility) ---
-# Plot the SVM probability and the static threshold for fragility
-FRAGILITY_THRESHOLD = config.FRAGILITY_THRESHOLD
+# Plot the SVM probability (Systemic Risk) and the static critical threshold
+FRAGILITY_THRESHOLD = config.MARKET_CRITICAL_THRESHOLD
 
 ax2.plot(df_results.index, df_results['y_pred_fuel'], color='royalblue', label='Market Fragility (SVM)', linewidth=1.5)
 ax2.axhline(y=FRAGILITY_THRESHOLD, color='red', linestyle='--', linewidth=1.5, label=f'Fragility Threshold ({FRAGILITY_THRESHOLD})')
@@ -101,7 +101,7 @@ ax2.legend(loc="upper left")
 ax2.grid(True, ls="--", linewidth=0.5)
 
 # --- PANEL 3: The "Spark" (GPR) & Dynamic Gating ---
-# Plot the LSTM probability and the DYNAMIC threshold
+# Plot the LSTM probability (Geopolitical Risk) against the DYNAMIC threshold
 ax3.plot(df_results.index, df_results['y_pred_proba'], color='#FF8C00', label='Geopolitical Risk (LSTM)', linewidth=1.5) # Dark Orange
 ax3.plot(df_results.index, df_results['dynamic_threshold'], color='black', linestyle='-', linewidth=1.5, label='Dynamic Gating Threshold')
 

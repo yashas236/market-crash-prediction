@@ -6,8 +6,9 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.callbacks import EarlyStopping
 import matplotlib.pyplot as plt
 import random
-from tensorflow.keras.layers import LSTM, Dense, Dropout, Bidirectional
-from sklearn.svm import SVC
+from tensorflow.keras.layers import Input, Dense, LSTM, Bidirectional, Dropout, Concatenate, Activation, Dot, Flatten, Softmax
+from tensorflow.keras.models import Model
+import tensorflow.keras.backend as K
 import joblib
 from sklearn.metrics import classification_report
 import config
@@ -92,16 +93,43 @@ else:
     class_weight_dict = None
 
 # --- 8. Build the STACKED Bi-LSTM Model ---
-model = Sequential()
-model.add(Bidirectional(LSTM( # <-- Wrap the first layer
-    units=50, 
-    return_sequences=True, 
-    input_shape=(LOOKBACK_DAYS, len(feature_columns))
-)))
-model.add(Dropout(0.2))
-model.add(LSTM(units=50, return_sequences=False)) # The second layer can stay the same
-model.add(Dropout(0.2))
-model.add(Dense(units=1, activation='sigmoid'))
+def build_attention_model(input_shape):
+    inputs = Input(shape=input_shape)
+
+    # 1. Bi-Directional LSTM Layer
+    # Returns (Batch, Time, 128) because units=64 and it's bidirectional
+    lstm_out = Bidirectional(LSTM(units=64, return_sequences=True))(inputs)
+    lstm_out = Dropout(0.3)(lstm_out)
+
+    # 2. Attention Mechanism
+    # Compute a score for every time step: (Batch, Time, 1)
+    attention_score = Dense(1, activation='tanh')(lstm_out)
+    
+    # Convert scores to probabilities summing to 1 over the Time axis (axis=1)
+    attention_weights = Softmax(axis=1)(attention_score)
+
+    # 3. Context Vector
+    # Weighted sum of LSTM outputs. 
+    # Dot(axes=1) sums over the Time dimension.
+    # Shape becomes (Batch, 1, 128)
+    context_vector = Dot(axes=1)([attention_weights, lstm_out])
+
+    # Flatten to remove the '1' dimension, resulting in (Batch, 128)
+    context_vector = Flatten()(context_vector)
+
+    # 4. Classification Head
+    x = Dense(32, activation='relu')(context_vector)
+    x = Dropout(0.2)(x)
+    outputs = Dense(1, activation='sigmoid')(x)
+
+    model = Model(inputs=inputs, outputs=outputs)
+    return model
+
+# Initialize the model
+input_shape = (LOOKBACK_DAYS, len(feature_columns))
+model = build_attention_model(input_shape)
+
+model.summary()
 
 # --- 9. Compile the Model (Identical) ---
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
@@ -122,10 +150,10 @@ history = model.fit(
 print("Model training complete.")
 
 # --- 11. Save Model & Test Data (local) ---
-model.save("trained_ews_model_gpr.h5")
-np.save("X_test_seq_gpr.npy", X_test_seq)
-np.save("y_test_seq_gpr.npy", y_test_seq)
-print("\nTrained model saved as 'trained_ews_model_gpr.h5'")
+model.save(config.MODEL_SPARK)
+np.save(config.SEQ_X_TEST, X_test_seq)
+np.save(config.SEQ_Y_TEST, y_test_seq)
+print(f"\nTrained model saved as '{config.MODEL_SPARK}'")
 
 # --- 12. Plot Training Curves ---
 print("\nGenerating training history plots...")

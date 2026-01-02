@@ -55,14 +55,18 @@ This dual-threshold system is designed to maximize the F1-Score, balancing the t
 
 ## 4. Usage
 
-The project workflow consists of three main stages: Optimization, Backtesting, and Visualization.
+The project workflow consists of three main stages: Training, Backtesting, and Visualization.
 
-### Step 1: Optimize Thresholds
+### Step 1: Train Models
 
-Run the optimization script to find the best dynamic gating thresholds using your validation set.
+Train the "Spark" (GPR-LSTM) and "Fuel" (Market-SVM) models independently.
 
 ```bash
-python optimize_gate.py
+# Train the Geopolitical "Spark" Model
+python train_lstm_model.py
+
+# Train the Market Fragility "Fuel" Model
+python train_market_svm.py
 ```
 
 _Output: Prints the optimal Fragility, High-Sensitivity, and Low-Sensitivity thresholds._
@@ -92,11 +96,11 @@ _Output: Saves `backtest_visualization.png`._
 
 ### Hits and Misses
 
-The model successfully predicted the **2020 COVID-19 Crash** and parts of the **2022 Bear Market**. However, it missed several smaller, macro-driven crashes (e.g., inflation spikes), highlighting the need for future integration of macroeconomic data (like credit spreads).
+The model achieved a **72% Recall** in the latest backtest, successfully predicting the **2020 COVID-19 Crash**, the **2022 Bear Market**, and the **2024 Yen Carry Trade Unwind**. However, it missed several smaller, macro-driven crashes (e.g., 2022 Inflation Spikes), highlighting the need for future integration of macroeconomic data (like credit spreads).
 
 ### The Value of "False Alarms"
 
-Many "false alarms" were correctly identified geopolitical threats (e.g., **2019 Trade War**, **2022 Russia-Ukraine Pre-Invasion**) that did not result in a crash due to external interventions (e.g., Fed stimulus). These demonstrate the model's ability to detect the "spark" even if the "fire" was put out by policymakers.
+Many "false alarms" were correctly identified geopolitical threats (e.g., **2019 Trade War**, **2022 Russia-Ukraine Pre-Invasion**) that did not result in a crash due to external interventions (e.g., Fed stimulus). The model correctly signaled the Russia-Ukraine risk **20 days before** the actual invasion/market reaction.
 
 ### Model Interpretability (SHAP)
 

@@ -25,8 +25,8 @@ LOOKBACK_DAYS = config.LOOKBACK_DAYS
 try:
     # --- Load the "Spark" model (LSTM trained on GPR) ---
     model = load_model(config.MODEL_SPARK) 
-    y_test_seq = np.load("y_test_seq_gpr.npy") 
-    X_test_seq = np.load("X_test_seq_gpr.npy") 
+    y_test_seq = np.load(config.SEQ_Y_TEST) 
+    X_test_seq = np.load(config.SEQ_X_TEST) 
     
     # --- Load the "Fuel" model (SVM trained on Market Fragility) ---
     svm_fuel_model = joblib.load(config.MODEL_FUEL)
@@ -55,31 +55,46 @@ X_market_test_aligned = X_market_test.iloc[LOOKBACK_DAYS:]
 X_market_test_scaled = market_scaler.transform(X_market_test_aligned)
 market_fragility_prob = svm_fuel_model.predict_proba(X_market_test_scaled)[:, 1]
 
-# 3. The "Gated" Signal - Using Optimized Thresholds
-# These values were determined by running `optimize_gate.py` on the validation set.
-FRAGILITY_THRESHOLD = config.FRAGILITY_THRESHOLD
-HIGH_SENS_GPR_THRESHOLD = config.HIGH_SENS_GPR_THRESHOLD
-LOW_SENS_GPR_THRESHOLD = config.LOW_SENS_GPR_THRESHOLD
+# 3. The "Dual Sensor" Signal - OR Logic
+# We treat the two models as independent alarms. If either screams, we exit.
+GPR_PANIC_THRESHOLD = config.GPR_PANIC_THRESHOLD
+MARKET_CRITICAL_THRESHOLD = config.MARKET_CRITICAL_THRESHOLD
 
 y_pred_binary = []
-dynamic_thresholds = []
+
 for gpr_p, fragility in zip(gpr_prob, market_fragility_prob):
-    # If Market Fragility is HIGH, use a lower (more sensitive) threshold for the GPR signal.
-    threshold = HIGH_SENS_GPR_THRESHOLD if fragility > FRAGILITY_THRESHOLD else LOW_SENS_GPR_THRESHOLD
-    dynamic_thresholds.append(threshold)
-    y_pred_binary.append(1 if gpr_p > threshold else 0)
+    # 1. GPR ALARM (The "External Shock" detector)
+    # Trigger if geopolitical risk is screaming, regardless of market condition
+    gpr_signal = 1 if gpr_p > GPR_PANIC_THRESHOLD else 0 
+
+    # 2. MARKET ALARM (The "Internal Systemic Failure" detector)
+    # Trigger if market fragility is extremely high (e.g. VIX explosion), regardless of GPR
+    # Note: SVM probabilities are skewed low, so 0.50 is actually a very high confidence score
+    market_signal = 1 if fragility > MARKET_CRITICAL_THRESHOLD else 0 
+
+    # 3. COMBINED SIGNAL (OR Logic)
+    # Alarm if EITHER system detects a crisis
+    final_signal = 1 if (gpr_signal == 1 or market_signal == 1) else 0
+
+    y_pred_binary.append(final_signal)
 
 y_pred_binary = np.array(y_pred_binary)
-dynamic_thresholds = np.array(dynamic_thresholds)
-# For ROC AUC, we will use the original GPR probability, as the gated logic is a binary rule.
-y_pred_proba = gpr_prob
 
+# Critical Update: For ROC AUC evaluation, the "probability of crash" is no longer just GPR.
+# It is now the MAXIMUM threat level detected by either system.
+y_pred_proba = np.maximum(gpr_prob, market_fragility_prob)
 # --- Save predictions for visualization script ---
-np.save("y_pred_proba.npy", y_pred_proba)
-np.save("y_pred_fuel.npy", market_fragility_prob)
-np.save("y_pred_binary.npy", y_pred_binary)
-np.save("dynamic_thresholds.npy", dynamic_thresholds)
-print("Saved prediction probabilities to 'y_pred_proba.npy'")
+np.save(config.PRED_PROBA, y_pred_proba)        # Now contains MAX(GPR, Fragility)
+np.save(config.PRED_FUEL, market_fragility_prob) # The internal SVM probability
+np.save(config.PRED_BINARY, y_pred_binary)       # The final 0/1 signal (OR logic)
+
+# COMPATIBILITY FIX: 
+# The "Dual Sensor" logic uses a static threshold (0.70) for GPR.
+# We create an array filled with 0.70 so your plotting script draws a flat cutoff line.
+static_thresholds = np.full(shape=y_pred_proba.shape, fill_value=GPR_PANIC_THRESHOLD)
+np.save(config.THRESHOLDS, static_thresholds)
+
+print("Saved prediction probabilities and Dual Sensor thresholds to disk.")
 
 y_true = y_test_seq
 

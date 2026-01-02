@@ -10,7 +10,7 @@ tickers = ["^GSPC", "^VIX"]
 
 # Define the time period
 start_date = "2000-01-01"
-end_date = pd.to_datetime("today").strftime('%Y-%m-%d') # Get data up to today
+end_date = pd.to_datetime("today").strftime('%Y-%m-%d') # Downloads data up to the current date
 
 # Download full OHLCV data for S&P 500 and VIX
 data = yf.download(tickers, start=start_date, end=end_date)

@@ -6,7 +6,6 @@ from sklearn.metrics import classification_report
 import joblib
 import os
 import random
-import tensorflow as tf
 import config
 import utils
 
@@ -15,7 +14,6 @@ SEED_VALUE = 42
 os.environ['PYTHONHASHSEED'] = str(SEED_VALUE)
 random.seed(SEED_VALUE)
 np.random.seed(SEED_VALUE)
-tf.random.set_seed(SEED_VALUE)
 
 print("Starting Phase: Training Market Fragility SVM Model (The 'Fuel')...")
 
