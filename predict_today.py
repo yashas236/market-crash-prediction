@@ -1,12 +1,12 @@
 import os
+# Suppress TensorFlow logs before importing it
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+
 import numpy as np
 import pandas as pd
 import joblib
 from tensorflow.keras.models import load_model
 import config
-
-# Suppress TensorFlow logs
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
 def predict_latest():
     print("--- Loading Models and Data ---")
