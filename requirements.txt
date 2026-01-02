@@ -1,8 +1,8 @@
-numpy<2.0
-pandas<2.2
+numpy
+pandas
 scikit-learn
 tensorflow>=2.16
-matplotlib
+matplotlib==3.9.2
 yfinance>=0.2.33
 pandas-ta
 joblib
