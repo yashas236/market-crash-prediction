@@ -4,7 +4,7 @@ scikit-learn
 tensorflow
 matplotlib
 yfinance
-pandas-ta @ git+https://github.com/twopirllc/pandas-ta
+pandas-ta
 joblib
 shap
 flake8
