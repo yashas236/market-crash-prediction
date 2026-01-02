@@ -3,7 +3,7 @@ pandas<2.2
 scikit-learn
 tensorflow>=2.16
 matplotlib
-yfinance
+yfinance>=0.2.33
 pandas-ta
 joblib
 shap
