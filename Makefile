@@ -2,9 +2,9 @@
 PYTHON = python
 
 # Targets
-.PHONY: all train optimize run plot test lint
+.PHONY: all train optimize run plot test lint backtest
 
-all: test train optimize run plot
+all: train optimize test run plot
 
 train:
 	@echo "--- Training Models ---"
@@ -18,6 +18,8 @@ optimize:
 run:
 	@echo "--- Running Backtest ---"
 	$(PYTHON) run_event_backtest.py
+
+backtest: run
 
 plot:
 	@echo "--- Generating Visualization ---"

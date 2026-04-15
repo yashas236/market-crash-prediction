@@ -1,8 +1,8 @@
 import pandas as pd
 
 # --- Model Parameters ---
-LOOKBACK_DAYS = 30
-WARNING_WINDOW_DAYS = 10
+LOOKBACK_DAYS = 42
+WARNING_WINDOW_DAYS = 30
 
 # --- Feature Definitions ---
 GPR_FEATURES = [
@@ -18,8 +18,8 @@ MARKET_FEATURES = [
 
 # --- Optimized Thresholds (Default) ---
 # These can be updated after running optimize_gate.py
-GPR_PANIC_THRESHOLD = 0.5679          # Trigger for external geopolitical shock
-MARKET_CRITICAL_THRESHOLD = 0.2692    # Trigger for internal systemic failure (SVM)
+GPR_PANIC_THRESHOLD = 0.3723          # Trigger for external geopolitical shock
+MARKET_CRITICAL_THRESHOLD = 0.3899    # Trigger for internal systemic failure (SVM)
 
 # --- File Paths ---
 DATA_TRAIN = "data/train_structured.csv"

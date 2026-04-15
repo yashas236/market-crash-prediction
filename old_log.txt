@@ -1,0 +1,123 @@
+
+==================================================
+NEW GRID SEARCH SESSION
+==================================================
+
+========================================
+TESTING: Warning=10 | Lookback=21
+========================================
+--- Event-Based Backtest Results ---
+Warning Window: 10 days |Lookback: 21 days| Dual-Sensor OR Logic
+----------------------------------------
+Total Actual Crash Events: 25
+Events Predicted Early (Hits): 16
+Events Missed: 9
+Event-Based Recall (Hit Rate): 64.00%
+Total False Alarm Events: 47
+----------------------------------------
+
+
+
+========================================
+TESTING: Warning=20 | Lookback=21
+========================================
+--- Event-Based Backtest Results ---
+Warning Window: 20 days |Lookback: 21 days| Dual-Sensor OR Logic
+----------------------------------------
+Total Actual Crash Events: 25
+Events Predicted Early (Hits): 18
+Events Missed: 7
+Event-Based Recall (Hit Rate): 72.00%
+Total False Alarm Events: 14
+----------------------------------------
+
+
+
+========================================
+TESTING: Warning=30 | Lookback=21
+========================================
+--- Event-Based Backtest Results ---
+Warning Window: 30 days |Lookback: 21 days| Dual-Sensor OR Logic
+----------------------------------------
+Total Actual Crash Events: 25
+Events Predicted Early (Hits): 14
+Events Missed: 11
+Event-Based Recall (Hit Rate): 56.00%
+Total False Alarm Events: 7
+----------------------------------------
+
+
+
+========================================
+TESTING: Warning=10 | Lookback=42
+========================================
+--- Event-Based Backtest Results ---
+Warning Window: 10 days |Lookback: 42 days| Dual-Sensor OR Logic
+----------------------------------------
+Total Actual Crash Events: 25
+Events Predicted Early (Hits): 16
+Events Missed: 9
+Event-Based Recall (Hit Rate): 64.00%
+Total False Alarm Events: 22
+----------------------------------------
+
+
+
+========================================
+TESTING: Warning=20 | Lookback=42
+========================================
+--- Event-Based Backtest Results ---
+Warning Window: 20 days |Lookback: 42 days| Dual-Sensor OR Logic
+----------------------------------------
+Total Actual Crash Events: 25
+Events Predicted Early (Hits): 11
+Events Missed: 14
+Event-Based Recall (Hit Rate): 44.00%
+Total False Alarm Events: 8
+----------------------------------------
+
+
+
+========================================
+TESTING: Warning=10 | Lookback=63
+========================================
+--- Event-Based Backtest Results ---
+Warning Window: 10 days |Lookback: 63 days| Dual-Sensor OR Logic
+----------------------------------------
+Total Actual Crash Events: 25
+Events Predicted Early (Hits): 16
+Events Missed: 9
+Event-Based Recall (Hit Rate): 64.00%
+Total False Alarm Events: 20
+----------------------------------------
+
+
+
+========================================
+TESTING: Warning=20 | Lookback=63
+========================================
+--- Event-Based Backtest Results ---
+Warning Window: 20 days |Lookback: 63 days| Dual-Sensor OR Logic
+----------------------------------------
+Total Actual Crash Events: 25
+Events Predicted Early (Hits): 17
+Events Missed: 8
+Event-Based Recall (Hit Rate): 68.00%
+Total False Alarm Events: 17
+----------------------------------------
+
+
+
+========================================
+TESTING: Warning=30 | Lookback=63
+========================================
+--- Event-Based Backtest Results ---
+Warning Window: 30 days |Lookback: 63 days| Dual-Sensor OR Logic
+----------------------------------------
+Total Actual Crash Events: 25
+Events Predicted Early (Hits): 19
+Events Missed: 6
+Event-Based Recall (Hit Rate): 76.00%
+Total False Alarm Events: 18
+----------------------------------------
+

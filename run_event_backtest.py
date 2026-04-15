@@ -168,7 +168,7 @@ if pred_alarm_indices.any():
 
 # --- 8. Report Event-Based Metrics (Identical) ---
 print("\n--- Event-Based Backtest Results ---")
-print(f"Warning Window: {WARNING_WINDOW_DAYS} days | Dual-Sensor OR Logic")
+print(f"Warning Window: {WARNING_WINDOW_DAYS} days |Lookback: {LOOKBACK_DAYS} days| Dual-Sensor OR Logic")
 print("-" * 40)
 print(f"Total Actual Crash Events: {len(event_groups)}")
 print(f"Events Predicted Early (Hits): {events_hit}")

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import pandas_ta as ta # Make sure you have run 'pip install pandas-ta'
+import pandas_ta_classic as ta # Make sure you have run 'pip install pandas-ta-classic'
 
 print("Starting Phase 2: Preprocessing structured data (17-Feature Advanced)...")
 
