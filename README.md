@@ -94,7 +94,7 @@ _Output: Saves `backtest_visualization.png`._
 
 ### Hits and Misses
 
-The model achieved a **72% Recall** in the latest backtest, successfully predicting the **2020 COVID-19 Crash**, the **2022 Bear Market**, and the **2024 Yen Carry Trade Unwind**. However, it missed several smaller, macro-driven crashes (e.g., 2022 Inflation Spikes), highlighting the need for future integration of macroeconomic data (like credit spreads).
+The model achieved an **80% Recall** (with an **AUROC of 0.9160**) in the latest backtest using a 30-day warning window and 42-day lookback period. It successfully predicted **20 out of 25** actual crash events, including the **2020 COVID-19 Crash**, the **2022 Bear Market**, and the **2024 Yen Carry Trade Unwind**. However, it missed several smaller, macro-driven crashes (e.g., 2022 Inflation Spikes), highlighting the need for future integration of macroeconomic data (like credit spreads).
 
 ### The Value of "False Alarms"
 
